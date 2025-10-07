@@ -44,8 +44,8 @@ It is not clear how these relate to the the sensors, though when observed there 
 
 ## References
 A number of false starts were made before I found this simple tutorial:
-[Connection tutorial](https://danielwippermann.github.io/resol-vbus/#/md/docs/connection-tutorial) 
-[Live data tutorial](https://danielwippermann.github.io/resol-vbus/#/md/docs/live-data-tutorial)
++ [Connection tutorial](https://danielwippermann.github.io/resol-vbus/#/md/docs/connection-tutorial) 
++ [Live data tutorial](https://danielwippermann.github.io/resol-vbus/#/md/docs/live-data-tutorial)
 
 The fields returned by the device are given here:
 [DeltaSol CS Plus fields](https://danielwippermann.github.io/resol-vbus/#/vsf/fields/00_0010_2211_10_0100)
