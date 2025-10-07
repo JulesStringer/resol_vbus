@@ -121,7 +121,7 @@ async function runit(){
             }
             if ( key === 'Heat quantity'){
                 if ( starting_values[key]){
-                    r[ 'Period ' + key] = latest_cache_field(cache, key) - starting_values[key];
+                    r[ 'Period_' + key] = latest_cache_field(cache, key) - starting_values[key];
                     //console.log('starting_values[' + key + '] :' + starting_values[key]);
                 }
             }

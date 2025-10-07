@@ -10,27 +10,27 @@ It receives packets from the serial port about once a second, aggregates are del
 | Field                    | Aggregate type | Mnemonic |Usage                 |
 |--------------------------|----------------|----------|----------------------|
 | Timestamp                | Latest         |          | ISO format time      |
-| Temperature sensor 1     | Average        | COL      |Collector temperature |
-| Temperature sensor 2     | Average        | TST      |Store temperature     |
-| Temperature sensor 3     | Average        | S3       |Additional sensor     |
-| Temperature sensor 4     | Average        |          | See note below       |
-| Flow rate                | Average        |          | Always -999.00       |
-| Pump speed relay 1       | Average        | %        | % of max pump speed  |
-| Pump speed relay 2       | Average        |          | % of max pump speed  |
-| Operating hours relay 1  | Latest         | hP       | Pump cumulativee Operating hours |
-| Operating hours relay 2  | Latest         |          | Always 0             |
+| Temperature_sensor_1     | Average        | COL      |Collector temperature |
+| Temperature_sensor_2     | Average        | TST      |Store temperature     |
+| Temperature_sensor_3     | Average        | S3       |Additional sensor     |
+| Temperature_sensor_4     | Average        |          | See note below       |
+| Flow_rate                | Average        |          | Always -999.00       |
+| Pump_speed_relay_1       | Average        | %        | % of max pump speed  |
+| Pump_speed_relay_2       | Average        |          | % of max pump speed  |
+| Operating_hours_relay_1  | Latest         | hP       | Pump cumulativee Operating hours |
+| Operating_hours_relay_2  | Latest         |          | Always 0             |
 | UnitType                 | Latest         |          | Always 11            |
 | System                   | Latest         |          | Always 1             |
 | ErrorMask                | Orred          |          |                      |
 | System time              | Latest         |          | Minutes since day start |
-| Sensor 1 defective       | Orred          |          | Error flag           |
-| Sensor 2 defective       | Orred          |          | Error flag           |
-| Sensor 3 defective       | Orred          |          | Error flag           |
-| Sensor 4 defective       | Orred          |          | Error flag           |
-| Status mask              | Orred          |          |                      |
-| Heat quantity            | Latest         |          | Wh since reference pt|
-| Period Heat quantity     | Difference     |          | Diff between start and end of  period |
-| SW Version               | Latest         |          | Always 3             |
+| Sensor_1_defective       | Orred          |          | Error flag           |
+| Sensor_2_defective       | Orred          |          | Error flag           |
+| Sensor_3_defective       | Orred          |          | Error flag           |
+| Sensor_4_defective       | Orred          |          | Error flag           |
+| Status_mask              | Orred          |          |                      |
+| Heat_quantity            | Latest         |          | Wh since reference pt|
+| Period_Heat_quantity     | Difference     |          | Diff between start and end of  period |
+| SW_Version               | Latest         |          | Always 3             |
 
 ### NOTE
 The DeltaSol unit reports the temperature values to its screen:
