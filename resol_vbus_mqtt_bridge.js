@@ -86,6 +86,7 @@ async function runit(){
                 //console.log('f.name: ', f.name);
                 //console.log('f.rawValue: ', f.rawValue);
                 let key = f.name.replace(/\s+/g, '_');
+                //console.log('f.name: ' + f.name + ' key: ' + key);
                 payload[key] = f.rawValue;
             }
             //console.log(JSON.stringify(payload, null, 2));
@@ -104,28 +105,28 @@ async function runit(){
             if ( key === 'timestamp'){
                 r[key] = latest_cache_field(cache,key);
             }
-            if ( key.startsWith('Temperature sensor')){
+            if ( key.startsWith('Temperature_sensor')){
                 r[key] = average_cache_field(cache, key);
             }
-            if ( key.startsWith('Flow rate')){
+            if ( key.startsWith('Flow_rate')){
                 r[key] = average_cache_field(cache, key);
             }
-            if ( key.startsWith('Pump speed relay')){
+            if ( key.startsWith('Pump_speed_relay')){
                 r[key] = average_cache_field(cache, key);
             }
-            if ( key.startsWith('Operating hours relay')){
+            if ( key.startsWith('Operating_hours_relay')){
                 r[key] = latest_cache_field(cache, key);
             }
-            if ( key === 'UnitType' || key === 'System' || key === 'System time' || key === 'Heat quantity' || key === 'SW Version'){
+            if ( key === 'UnitType' || key === 'System' || key === 'System_time' || key === 'Heat_quantity' || key === 'SW_Version'){
                 r[key] = latest_cache_field(cache, key);
             }
-            if ( key === 'Heat quantity'){
+            if ( key === 'Heat_quantity'){
                 if ( starting_values[key]){
                     r[ 'Period_' + key] = latest_cache_field(cache, key) - starting_values[key];
                     //console.log('starting_values[' + key + '] :' + starting_values[key]);
                 }
             }
-            if ( key === 'ErrorMask' || key === 'Status mask' || key.startsWith('Sensor ')){
+            if ( key === 'ErrorMask' || key === 'Status_mask' || key.startsWith('Sensor ')){
                 r[key] = or_cache_field(cache, key);
             }
         }
