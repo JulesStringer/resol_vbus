@@ -15,6 +15,12 @@ const mqttTopicPrefix = 'resol_vbus/';
 const vbus = require('resol-vbus');
 const { Specification } = require('resol-vbus');
 const mqtt = require('mqtt');
+const fs = require('fs');
+
+// Check for the command-line argument
+const GENERATE_SQL_MODE = process.argv.includes('--generate-sql');
+// Flag to ensure SQL generation happens only once
+let sqlGenerated = false; 
 
 async function create_mqtt_client(){
     return new Promise((resolve, reject) => {
@@ -48,6 +54,57 @@ function or_cache_field(cache, name){
 function latest_cache_field(cache, name){
     return cache[cache.length - 1][name];
 }
+function generateQuestDBSQL(packetFields) {
+    // 1. Start the CREATE TABLE statement
+    let sql = `CREATE TABLE resol_vbus (\n`;
+
+    // 2. Add the required TIMESTAMP column
+    sql += `  timestamp TIMESTAMP,\n`;
+    
+    // Use a Set to prevent duplicate column definitions (if any exist, though unlikely)
+    const columns = new Set(); 
+
+    for (const f of packetFields) {
+        const columnName = f.name.replace(/\s+/g, '_');
+        
+        if (columns.has(columnName)) continue;
+        
+        let dbType;
+        const rawValue = f.rawValue;
+        
+        // --- Type Inference Logic ---
+        if (typeof rawValue === 'number') {
+            // Check if it's an integer or a float/double
+            // columns that are going to be averaged need to be double
+            if ( columnName.startsWith('Temperature_sensor') ||
+                 columnName.startsWith('Flow_rate') || 
+                 columnName.startsWith('Pump_speed_relay')){
+                dbType = 'DOUBLE';
+            } else if (Number.isInteger(rawValue) && rawValue > -2147483648 && rawValue < 2147483647) {
+                 // Use INT for smaller integers (like flags/SW versions)
+                 dbType = 'INT';
+            } else if (Number.isInteger(rawValue)) {
+                // Use LONG for large cumulative integers (like Operating hours, Heat quantity)
+                dbType = 'LONG';
+            } else {
+                // Use DOUBLE for floats (Temperatures, rates)
+                dbType = 'DOUBLE';
+            }
+        } else {
+            // Default to STRING if for some reason a non-number appears
+            dbType = 'STRING'; 
+        }
+
+        sql += `  ${columnName} ${dbType},\n`;
+        columns.add(columnName);
+    }
+
+    // 3. Close the statement and define the designated timestamp column
+    // The slice(0, -2) removes the trailing comma and newline
+    sql = sql.slice(0, -2) + `\n) TIMESTAMP(timestamp);`;
+    sql += 'PARTITION BY DAY WAL DEDUP';
+    return sql;
+}
 async function runit(){
     let connection = new vbus.SerialConnection({
         path: serialPortPath
@@ -73,6 +130,27 @@ async function runit(){
             let payload = {
                 timestamp: packet.timestamp.toISOString()
             };
+            // --- SQL GENERATION LOGIC (Runs when flag is present) ---
+            if (GENERATE_SQL_MODE) {
+                if (!sqlGenerated) {
+                    let packetFields = spec.getPacketFieldsForHeaders([ packet ]);
+                    const createTableSql = generateQuestDBSQL(packetFields);
+                    
+                    console.log("\n--- QuestDB CREATE TABLE SQL ---\n");
+                    console.log(createTableSql);
+                    console.log("\n--------------------------------\n");
+                    
+                    sqlGenerated = true; // Set flag so it doesn't run again
+                }
+                // Once SQL is generated, we exit the script
+                if (sqlGenerated) {
+                    // Give a moment for the console log to flush, then exit
+                    setTimeout(() => process.exit(0), 100); 
+                    return; 
+                }
+            }
+            // --- END SQL GENERATION LOGIC ---
+
             //console.log('Timestamp: '  + packet.timestamp.toISOString());
             //console.log('Destination addreds: ' + packet.destinationAddress);
             //console.log('Channel: ' + packet.channel);

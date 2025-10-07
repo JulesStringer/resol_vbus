@@ -50,6 +50,8 @@ This module publishes:
 |resol_vbus/aggregates  | JSON containining the fields listed above  | retain: true |
 |resol_vbus/status      | string message online                      | retain: true |
 
+## SQL Generation
+A specimen CREATE TABLE statement for use with QuestDB can be generated to the console by running node resol_vbus_mqtt_bridge.js --generate-sql
 
 ## References
 A number of false starts were made before I found this simple tutorial:
