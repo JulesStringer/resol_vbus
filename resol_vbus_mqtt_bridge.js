@@ -94,9 +94,14 @@ function generateQuestDBSQL(packetFields) {
             // Default to STRING if for some reason a non-number appears
             dbType = 'STRING'; 
         }
-
         sql += `  ${columnName} ${dbType},\n`;
         columns.add(columnName);
+        if ( columnName === 'Heat_quantity'){
+            columnName = 'Period_Heat_quantity';
+            dbType = 'INT';
+            sql += `  ${columnName} ${dbType},\n`;
+            columns.add(columnName);
+        }
     }
 
     // 3. Close the statement and define the designated timestamp column
