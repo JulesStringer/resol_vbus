@@ -44,13 +44,12 @@ It is not clear how these relate to the the sensors, though when observed there 
 
 ## MQTT Publication
 This module publishes:
-+ topic: resol_vbus/aggregates
-+ message: JSON payload containining the fields listed above
-+ options: retain: true
 
-+ topic: resol_vbus/status
-+ message: 'online'
-+ options: retain: true
+| topic                 | message                                    | options      |
+|-----------------------|--------------------------------------------|--------------|
+|resol_vbus/aggregates  | JSON containining the fields listed above  | retain: true |
+|resol_vbus/status      | string message online                      | retain: true |
+
 
 ## References
 A number of false starts were made before I found this simple tutorial:
