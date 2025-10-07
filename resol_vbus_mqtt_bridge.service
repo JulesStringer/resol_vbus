@@ -1,0 +1,14 @@
+[Unit]
+Description=resol_vbus_mqtt_bridge
+After=network.target
+
+[Service]
+User=jules
+ExecStart=/usr/bin/node /home/jules/bridges/resol_vbus/resol_vbus_mqtt_bridge.js 
+Restart=on-failure
+RestartSec=3
+Type=simple
+WorkingDirectory=/home/jules/bridges/resol_vbus/
+
+[Install]
+WantedBy=multi-user.target
