@@ -107,7 +107,7 @@ function generateQuestDBSQL(packetFields) {
     // 3. Close the statement and define the designated timestamp column
     // The slice(0, -2) removes the trailing comma and newline
     sql = sql.slice(0, -2) + `\n) TIMESTAMP(timestamp)`;
-    sql += ' PARTITION BY DAY WAL DEDUP;';
+    sql += ' PARTITION BY DAY WAL DEDUP UPSERT KEYS(timestamp);';
     return sql;
 }
 async function runit(){
