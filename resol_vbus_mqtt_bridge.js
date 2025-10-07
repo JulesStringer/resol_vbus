@@ -65,7 +65,7 @@ function generateQuestDBSQL(packetFields) {
     const columns = new Set(); 
 
     for (const f of packetFields) {
-        const columnName = f.name.replace(/\s+/g, '_');
+        let columnName = f.name.replace(/\s+/g, '_');
         
         if (columns.has(columnName)) continue;
         
