@@ -85,7 +85,8 @@ async function runit(){
                 //console.log('f.packetFieldSpec fieldId: ' + f.packetFieldSpec.fieldId + ' type: ' + JSON.stringify(f.packetFieldSpec.type));
                 //console.log('f.name: ', f.name);
                 //console.log('f.rawValue: ', f.rawValue);
-                payload[f.name] = f.rawValue;
+                let key = f.name.replace(/\s+/g, '_');
+                payload[key] = f.rawValue;
             }
             //console.log(JSON.stringify(payload, null, 2));
             cache.push(payload);
@@ -128,7 +129,7 @@ async function runit(){
                 r[key] = or_cache_field(cache, key);
             }
         }
-        console.log('r: ' + JSON.stringify(r, null, 2));
+        console.log('Publishing topic: ' + `${mqttTopicPrefix}aggregates` + ', message: ' + JSON.stringify(r, null, 2));
         mqtt_client.publish(`${mqttTopicPrefix}aggregates`, JSON.stringify(r), { retain: true});
         starting_values = cache[cache.length - 1];
         //console.log('starting_values: ' + JSON.stringify(starting_values, null, 3));
