@@ -209,7 +209,7 @@ async function runit(){
                     //console.log('starting_values[' + key + '] :' + starting_values[key]);
                 }
             }
-            if ( key === 'ErrorMask' || key === 'Status_mask' || key.startsWith('Sensor ')){
+            if ( key === 'ErrorMask' || key === 'Status_mask' || key.startsWith('Sensor_')){
                 r[key] = or_cache_field(cache, key);
             }
         }
