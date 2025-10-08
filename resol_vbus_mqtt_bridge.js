@@ -42,7 +42,7 @@ function average_cache_field(cache, name){
     for(let row of cache){
         sum += row[name];
     }
-    return (sum / count).toFixed(2);
+    return Math.round(sum * 100 / count)/100;
 }
 function or_cache_field(cache, name){
     let v = 0;
