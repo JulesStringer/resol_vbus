@@ -11,11 +11,16 @@
 const serialPortPath = '/dev/serial/by-id/usb-1fef_2018-if00'; // Check your system for the correct path
 const mqttBrokerUrl = 'mqtt://192.168.1.56';
 const mqttTopicPrefix = 'resol_vbus/';
+const nodemailer = require("nodemailer");
 
 const vbus = require('resol-vbus');
 const { Specification } = require('resol-vbus');
 const mqtt = require('mqtt');
 const fs = require('fs');
+const html_message = 
+"<h1>resol_vbus_mqtt_bridge failed</h1>\
+<p>${error}</p>\
+<p>Needs investigation</p>";
 
 // Check for the command-line argument
 const GENERATE_SQL_MODE = process.argv.includes('--generate-sql');
@@ -109,6 +114,39 @@ function generateQuestDBSQL(packetFields) {
     sql = sql.slice(0, -2) + `\n) TIMESTAMP(timestamp)`;
     sql += ' PARTITION BY DAY WAL DEDUP UPSERT KEYS(timestamp);';
     return sql;
+}
+async function sendMessage(message){
+    let cred_data = await fs.promises.readFile('/home/jules/.credentials/system_email/email_credentials.json');
+    let cred = JSON.parse(cred_data);
+    // Create a test account or replace with real credentials.
+    const transporter = nodemailer.createTransport({
+        host: cred.host,
+        port: cred.port,
+        secure: cred.secure, // true for 465, false for other ports
+        auth: {
+            user: cred.user,
+            pass: cred.pass,
+        },
+    });
+    console.log|('Created transporter');
+    // Wrap in an async IIFE so we can use await.
+    (async () => {
+        try{
+            console.log('About to send email');
+            const info = await transporter.sendMail({
+                from: '"System" <oakhouse@oakhousedaracombe.co.uk>',
+                to: "jules@oakhousedaracombe.co.uk",
+                subject: "${script} failure",
+                text: "Please logon to quest01 and investigate", // plain‑text body
+                html: message
+            });
+
+            console.log("Message sent:", info.messageId);
+            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        }catch(err){
+            console.log(err.toString());
+        }
+    })();
 }
 async function runit(){
     let connection = new vbus.SerialConnection({
@@ -222,4 +260,10 @@ async function runit(){
 }
 runit().catch((err) => {
     console.log(err.toString());
+    let message = html_message.replace('${error}', err.stack);
+    sendMessage(message).then( () => {
+        console.log('Email message sent');
+    }).catch( (err2) =>{
+        console.error('Sending email error: ', err2.stack);
+    });
 });
